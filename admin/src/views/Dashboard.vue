@@ -29,10 +29,10 @@
       <div class="card p-6 lg:col-span-2">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-gray-800">近期文章</h2>
-          <button @click="router.push('/admin/posts')" class="text-sm text-aurora-600 hover:text-aurora-700">查看全部 →</button>
+          <button @click="router.push('/posts')" class="text-sm text-aurora-600 hover:text-aurora-700">查看全部 →</button>
         </div>
         <div v-if="recentPosts.length" class="space-y-2">
-          <div v-for="post in recentPosts" :key="post.id" @click="router.push(`/admin/posts/${post.slug}/edit`)"
+          <div v-for="post in recentPosts" :key="post.id" @click="router.push(`/posts/${post.slug}/edit`)"
             class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 cursor-pointer transition-all">
             <div :class="['w-2 h-2 rounded-full', post.draft ? 'bg-yellow-400' : 'bg-green-400']"></div>
             <span class="flex-1 text-sm font-medium text-gray-700 truncate">{{ post.title }}</span>

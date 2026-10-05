@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/admin/login", name: "login", component: () => import("@/views/Login.vue") },
+  { path: "/login", name: "login", component: () => import("@/views/Login.vue") },
   {
-    path: "/admin",
+    path: "/",
     component: () => import("@/layout/AdminLayout.vue"),
     children: [
       { path: "", name: "dashboard", component: () => import("@/views/Dashboard.vue") },
@@ -23,8 +23,8 @@ const router = createRouter({ history: createWebHistory("/admin/"), routes });
 
 router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem("token");
-  if (!token && to.name !== "login") next("/admin/login");
-  else if (token && to.name === "login") next("/admin");
+  if (!token && to.name !== "login") next("/login");
+  else if (token && to.name === "login") next("/");
   else next();
 });
 

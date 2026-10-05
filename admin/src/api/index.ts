@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Use relative path so Vite proxy handles API requests in dev
+// Use relative path — proxy handles routing
 const API_BASE = "";
 
 const api = axios.create({ baseURL: `${API_BASE}/api`, timeout: 30000 });
@@ -16,7 +16,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      if (!window.location.pathname.endsWith("/login")) window.location.href = "/login";
+      localStorage.removeItem("user");
+      if (!window.location.pathname.endsWith("/admin/login")) {
+        window.location.href = "/admin/login";
+      }
     }
     return Promise.reject(error);
   }

@@ -6,7 +6,7 @@
         <h2 class="text-xl font-semibold text-gray-800">文章管理</h2>
         <span class="text-sm text-gray-400">({{ total }} 篇)</span>
       </div>
-      <button @click="router.push('/admin/posts/new')" class="btn-primary">✍️ 写新文章</button>
+      <button @click="router.push('/posts/new')" class="btn-primary">✍️ 写新文章</button>
     </div>
 
     <!-- Search & Filter -->
@@ -55,7 +55,7 @@
               <span :class="post.draft ? 'badge-warning' : 'badge-success'">{{ post.draft ? '草稿' : '已发布' }}</span>
             </td>
             <td class="px-4 py-3 text-right">
-              <button @click="router.push(`/admin/posts/${post.slug}/edit`)" class="text-sm text-aurora-600 hover:text-aurora-700 mr-3">编辑</button>
+              <button @click="router.push(`/posts/${post.slug}/edit`)" class="text-sm text-aurora-600 hover:text-aurora-700 mr-3">编辑</button>
               <button @click="deletePost(post)" class="text-sm text-red-500 hover:text-red-600">删除</button>
             </td>
           </tr>

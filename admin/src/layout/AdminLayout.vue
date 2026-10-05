@@ -41,7 +41,7 @@
               <span class="text-sm text-gray-600">{{ auth.user?.username || "admin" }}</span>
             </button>
             <div v-if="userMenuOpen" class="absolute right-0 top-12 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-fade-in">
-              <button @click="router.push('/admin/settings'); userMenuOpen = false" class="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50">⚙ 个人设置</button>
+              <button @click="router.push('/settings'); userMenuOpen = false" class="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50">⚙ 个人设置</button>
               <div class="border-t border-gray-100 my-1"></div>
               <button @click="logout" class="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-50">🚪 退出登录</button>
             </div>
@@ -70,13 +70,13 @@ const userMenuOpen = ref(false);
 const userMenuRef = ref<HTMLElement>();
 
 const menu = [
-  { path: "/admin", label: "仪表盘", icon: "📊" },
-  { path: "/admin/posts", label: "文章管理", icon: "📝" },
-  { path: "/admin/dynamics", label: "动态管理", icon: "💬" },
-  { path: "/admin/projects", label: "项目管理", icon: "📁" },
-  { path: "/admin/tags", label: "标签分类", icon: "🏷" },
-  { path: "/admin/images", label: "图片管理", icon: "🖼" },
-  { path: "/admin/settings", label: "系统设置", icon: "⚙" },
+  { path: "/", label: "仪表盘", icon: "📊" },
+  { path: "/posts", label: "文章管理", icon: "📝" },
+  { path: "/dynamics", label: "动态管理", icon: "💬" },
+  { path: "/projects", label: "项目管理", icon: "📁" },
+  { path: "/tags", label: "标签分类", icon: "🏷" },
+  { path: "/images", label: "图片管理", icon: "🖼" },
+  { path: "/settings", label: "系统设置", icon: "⚙" },
 ];
 
 const currentLabel = computed(() => {
