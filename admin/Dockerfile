@@ -5,11 +5,7 @@ RUN npm install
 COPY . .
 RUN npx vite build
 
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-RUN npm install -g serve
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html/admin
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 5174
-CMD ["serve", "dist", "-l", "5174"]

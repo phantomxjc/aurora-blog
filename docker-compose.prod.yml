@@ -2,11 +2,8 @@
 # 🌌 Aurora Blog — 一键拉取部署 (无需 clone 源码)
 #
 # 使用方法:
-#   1. 下载此文件: curl -O https://raw.githubusercontent.com/phantomxjc/aurora-blog/main/docker-compose.prod.yml
-#   2. 一键启动:   docker compose -f docker-compose.prod.yml up -d
-#
-# 或直接:
-#   docker run -d -p 8080:8080 phantomxjc/aurora-blog-proxy:latest  # 仅代理(需其他服务)
+#   curl -O https://raw.githubusercontent.com/phantomxjc/aurora-blog/main/docker-compose.prod.yml
+#   docker compose -f docker-compose.prod.yml up -d
 # ============================================================================
 
 services:
