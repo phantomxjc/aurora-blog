@@ -29,7 +29,7 @@ curl -O https://raw.githubusercontent.com/phantomxjc/aurora-blog/main/docker-com
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-访问 `http://localhost:8080` 即可使用。
+访问 `http://localhost:9090` 即可使用。
 
 ## 🚀 方式二：源码构建部署
 
@@ -58,10 +58,10 @@ DOCKER_USER=your-username ./docker-push.sh
 
 | 服务       | 地址                         | 说明         |
 | ---------- | ---------------------------- | ------------ |
-| 统一入口   | http://localhost:8080        | 代理入口     |
-| 博客前台   | http://localhost:8080/       | 面向访客     |
-| 管理后台   | http://localhost:8080/admin/ | 发文管理     |
-| API        | http://localhost:8080/api/   | 后端接口     |
+| 统一入口   | http://localhost:9090        | 代理入口     |
+| 博客前台   | http://localhost:9090/       | 面向访客     |
+| 管理后台   | http://localhost:9090/admin/ | 发文管理     |
+| API        | http://localhost:9090/api/   | 后端接口     |
 
 ## 🔑 默认管理员
 
