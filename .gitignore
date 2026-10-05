@@ -4,3 +4,5 @@ dist
 *.db
 uploads
 .env
+next-env.d.ts
+*.log
