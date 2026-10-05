@@ -6,6 +6,7 @@ COPY . .
 RUN npx vite build
 
 FROM nginx:alpine
+RUN mkdir -p /usr/share/nginx/html/admin
 COPY --from=builder /app/dist /usr/share/nginx/html/admin
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 5174
