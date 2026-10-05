@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Post {
+  id            Int       @id @default(autoincrement())
+  slug          String    @unique
+  title         String
+  description   String    @default("")
+  content       String
+  contentHtml   String?
+  coverImage    String    @default("")
+  category      String?
+  pinned        Boolean   @default(false)
+  draft         Boolean   @default(false)
+  author        String    @default("")
+  featured      Boolean   @default(false)
+  comment       Boolean   @default(true)
+  views         Int       @default(0)
+  published     DateTime
+  updated       DateTime?
+  createdAt     DateTime  @default(now())
+  tags          PostTag[]
+  images        Image[]
+
+  @@index([published])
+  @@index([category])
+  @@index([draft])
+}
+
+model PostTag {
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId  Int
+
+  @@id([postId, tagId])
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  slug      String    @unique
+  posts     PostTag[]
+  createdAt DateTime  @default(now())
+}
+
+model Dynamic {
+  id        Int      @id @default(autoincrement())
+  content   String
+  images    String   @default("[]")
+  pinned    Boolean  @default(false)
+  published DateTime
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  title       String
+  description String    @default("")
+  content     String    @default("")
+  coverImage  String    @default("")
+  techStack   String    @default("[]")
+  demoUrl     String    @default("")
+  repoUrl     String    @default("")
+  status      String    @default("active")
+  featured    Boolean   @default(false)
+  draft       Boolean   @default(false)
+  published   DateTime
+  createdAt   DateTime  @default(now())
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  email        String?
+  avatar       String   @default("")
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+}
+
+model Image {
+  id          Int       @id @default(autoincrement())
+  filename    String
+  originalName String?
+  mimeType    String
+  size        Int
+  url         String
+  post        Post?     @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postId      Int?
+  createdAt   DateTime  @default(now())
+}
+
+model Setting {
+  configKey String   @id
+  value     String
+  updatedAt DateTime @default(now())
+  updatedBy String?
+}

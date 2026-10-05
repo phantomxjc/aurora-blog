@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Lora", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  ::selection {
+    @apply bg-aurora-200 text-aurora-900;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-aurora-500 via-purple-500 to-pink-500 bg-clip-text text-transparent;
+  }
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20;
+  }
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+  }
+  .prose-aurora {
+    @apply prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-gray-900 prose-a:text-aurora-600 prose-code:text-aurora-700 prose-code:bg-aurora-50 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-blockquote:border-aurora-300 prose-blockquote:bg-aurora-50/50;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Highlight.js theme */
+.hljs { display: block; overflow-x: auto; padding: 1em; border-radius: 0.5rem; }
+.hljs-comment, .hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-type { color: #d73a49; }
+.hljs-string, .hljs-doctag, .hljs-regexp { color: #032f62; }
+.hljs-title, .hljs-section, .hljs-name, .hljs-selector-id, .hljs-selector-class { color: #6f42c1; }
+.hljs-number, .hljs-symbol, .hljs-bullet, .hljs-attribute, .hljs-meta { color: #005cc5; }
