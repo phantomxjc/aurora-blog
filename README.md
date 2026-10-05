@@ -15,21 +15,23 @@
 - 📁 **项目展示** — 作品集页面
 - 🖼 **图片管理** — 图库浏览与上传
 - 🔐 **JWT 认证** — 安全的后台管理
-- 🐳 **Docker 一键部署** — `docker compose up -d`
+- 🐳 **Docker 一键部署** — 无需下载源码
 
-## 🏗 架构
+## 🚀 方式一：一键拉取（推荐）
 
+无需 clone 源码，直接拉取预构建镜像：
+
+```bash
+# 下载 compose 文件
+curl -O https://raw.githubusercontent.com/phantomxjc/aurora-blog/main/docker-compose.prod.yml
+
+# 一键启动
+docker compose -f docker-compose.prod.yml up -d
 ```
-aurora-blog/
-├── blog/           # 博客前台 (Next.js 14 + Tailwind CSS)
-├── api/            # 后端 API (Express + Prisma + SQLite)
-├── admin/          # 管理后台 (Vue 3 + Tailwind CSS)
-├── proxy.js        # 统一代理 (Node.js http-proxy)
-├── docker-compose.yml
-└── Dockerfile      # 代理服务镜像
-```
 
-## 🚀 一键部署 (Docker)
+访问 `http://localhost:8080` 即可使用。
+
+## 🚀 方式二：源码构建部署
 
 ```bash
 git clone https://github.com/phantomxjc/aurora-blog.git
@@ -37,71 +39,73 @@ cd aurora-blog
 docker compose up -d --build
 ```
 
-启动后访问：
-
-| 服务       | 地址                    | 说明         |
-| ---------- | ----------------------- | ------------ |
-| 统一入口   | http://localhost:8080   | 代理入口     |
-| 博客前台   | http://localhost:8080/  | 面向访客     |
-| 管理后台   | http://localhost:8080/admin/ | 发文管理 |
-| 后端 API   | http://localhost:8080/api/   | API 接口 |
-
-## 🔧 开发模式
+## 🚀 方式三：推送镜像到自己的 Docker Hub
 
 ```bash
-# 1. 启动后端 API (端口 3002)
-cd api && npm install && npx prisma db push && npx tsx scripts/seed.ts && npx tsx src/main.ts
+git clone https://github.com/phantomxjc/aurora-blog.git
+cd aurora-blog
 
-# 2. 启动博客前台 (端口 3000)
-cd blog && npm install && npm run dev
+# 登录 Docker Hub
+docker login
 
-# 3. 启动管理后台 (端口 5174)
-cd admin && npm install && npm run dev
-
-# 4. 启动统一代理 (端口 8080)
-cd .. && npm install && node proxy.js
+# 构建并推送（修改 DOCKER_USER 为你的用户名）
+DOCKER_USER=your-username ./docker-push.sh
 ```
+
+推送完成后，任何人只需拉取你的镜像即可部署。
+
+## 📋 访问地址
+
+| 服务       | 地址                         | 说明         |
+| ---------- | ---------------------------- | ------------ |
+| 统一入口   | http://localhost:8080        | 代理入口     |
+| 博客前台   | http://localhost:8080/       | 面向访客     |
+| 管理后台   | http://localhost:8080/admin/ | 发文管理     |
+| API        | http://localhost:8080/api/   | 后端接口     |
 
 ## 🔑 默认管理员
 
 - 用户名: `admin`
 - 密码: `admin123`
 
-## 📁 目录结构
+## 🏗 架构
 
 ```
-blog/
-├── src/app/             # Next.js App Router 页面
-│   ├── page.tsx         # 首页
-│   ├── posts/[slug]/    # 文章详情
-│   ├── archive/         # 归档
-│   ├── tags/            # 标签
-│   ├── search/          # 搜索
-│   ├── dynamics/        # 动态
-│   ├── projects/        # 项目
-│   └── about/           # 关于
-├── src/components/      # 组件
-└── src/lib/api.ts       # API 客户端
+aurora-blog/
+├── blog/                  # 博客前台 (Next.js 14 + Tailwind CSS)
+├── api/                   # 后端 API (Express + Prisma + SQLite)
+├── admin/                 # 管理后台 (Vue 3 + Tailwind CSS)
+├── proxy.js               # 统一代理 (Node.js http-proxy)
+├── docker-compose.yml     # 源码构建部署
+├── docker-compose.prod.yml # 镜像拉取部署
+├── docker-push.sh         # 构建推送脚本
+└── Dockerfile             # 代理服务镜像
+```
 
-api/
-├── src/routes/          # API 路由
-│   ├── auth.ts          # 认证
-│   ├── posts.ts         # 文章 CRUD
-│   ├── dynamics.ts      # 动态
-│   ├── projects.ts      # 项目
-│   ├── tags.ts          # 标签
-│   ├── images.ts        # 图片上传
-│   └── settings.ts      # 设置
-├── src/utils/           # 工具函数
-├── prisma/schema.prisma # 数据模型
-└── scripts/seed.ts      # 种子数据
+### Docker 容器架构
 
-admin/
-├── src/views/           # 页面组件
-├── src/layout/          # 布局
-├── src/router/          # 路由
-├── src/stores/          # Pinia 状态
-└── src/api/             # API 客户端
+```
+docker compose up -d
+  ├── api     (Express + Prisma + SQLite)  :3002  ← 自动初始化数据库
+  ├── blog    (Next.js 14 SSR)             :3000
+  ├── admin   (Vue 3 静态)                 :5174
+  └── proxy   (Node.js 统一代理)           :8080  ← 入口
+```
+
+## 🔧 开发模式
+
+```bash
+# 1. 后端 API (端口 3002)
+cd api && npm install && npx prisma db push && npx tsx scripts/seed.ts && npx tsx src/main.ts
+
+# 2. 博客前台 (端口 3000)
+cd blog && npm install && npm run dev
+
+# 3. 管理后台 (端口 5174)
+cd admin && npm install && npm run dev
+
+# 4. 统一代理 (端口 8080)
+cd .. && npm install && node proxy.js
 ```
 
 ## 📄 License

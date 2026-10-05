@@ -1,0 +1,58 @@
+# ============================================================================
+# 🌌 Aurora Blog — 一键拉取部署 (无需 clone 源码)
+#
+# 使用方法:
+#   1. 下载此文件: curl -O https://raw.githubusercontent.com/phantomxjc/aurora-blog/main/docker-compose.prod.yml
+#   2. 一键启动:   docker compose -f docker-compose.prod.yml up -d
+#
+# 或直接:
+#   docker run -d -p 8080:8080 phantomxjc/aurora-blog-proxy:latest  # 仅代理(需其他服务)
+# ============================================================================
+
+services:
+  api:
+    image: phantomxjc/aurora-blog-api:latest
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - JWT_SECRET=aurora-secret-key-2026
+    volumes:
+      - api-uploads:/app/uploads
+      - api-db:/app/prisma
+    restart: unless-stopped
+
+  blog:
+    image: phantomxjc/aurora-blog-blog:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - INTERNAL_API_URL=http://api:3002
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  admin:
+    image: phantomxjc/aurora-blog-admin:latest
+    ports:
+      - "5174:5174"
+    restart: unless-stopped
+
+  proxy:
+    image: phantomxjc/aurora-blog-proxy:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - PROXY_PORT=8080
+      - API_TARGET=http://api:3002
+      - BLOG_TARGET=http://blog:3000
+      - ADMIN_TARGET=http://admin:5174
+    depends_on:
+      - api
+      - blog
+      - admin
+    restart: unless-stopped
+
+volumes:
+  api-uploads:
+  api-db:
