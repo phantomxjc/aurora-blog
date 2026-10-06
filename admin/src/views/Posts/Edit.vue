@@ -26,6 +26,11 @@
               class="px-2.5 py-1.5 rounded-lg hover:bg-white text-sm text-gray-600 transition-all" :title="btn.label">
               {{ btn.icon }}
             </button>
+            <!-- Image upload button: opens file picker -->
+            <button @click="triggerImageUpload"
+              class="px-2.5 py-1.5 rounded-lg hover:bg-white text-sm text-gray-600 transition-all" title="上传图片到博文">
+              🖼
+            </button>
             <div class="flex-1"></div>
             <button @click="previewMode = !previewMode"
               :class="['px-3 py-1.5 rounded-lg text-sm font-medium transition-all', previewMode ? 'bg-aurora-500 text-white' : 'text-gray-500 hover:bg-white']">
@@ -90,6 +95,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Hidden file input for image upload -->
+    <input type="file" ref="fileInput" accept="image/*" multiple class="hidden" @change="handleFileUpload" />
   </div>
 </template>
 
@@ -112,13 +120,13 @@ const categories = ref<string[]>([]);
 const previewMode = ref(false);
 const previewHtml = ref("");
 const uploading = ref(false);
+const fileInput = ref<HTMLInputElement | null>(null);
 
 const toolbar = [
   { label: "加粗", icon: "B", prefix: "**", suffix: "**" },
   { label: "斜体", icon: "I", prefix: "*", suffix: "*" },
   { label: "标题", icon: "H", prefix: "## ", suffix: "" },
   { label: "链接", icon: "🔗", prefix: "[", suffix: "](url)" },
-  { label: "图片", icon: "🖼", prefix: "![", suffix: "](url)" },
   { label: "代码", icon: "</>", prefix: "`", suffix: "`" },
   { label: "代码块", icon: "{}", prefix: "\n```\n", suffix: "\n```\n" },
   { label: "引用", icon: "❝", prefix: "> ", suffix: "" },
@@ -156,23 +164,56 @@ async function updatePreview() {
 watch(() => form.value.content, () => { if (previewMode.value) updatePreview(); });
 watch(previewMode, (val) => { if (val) updatePreview(); });
 
-async function handleDrop(e: DragEvent) {
-  const files = e.dataTransfer?.files;
+// --- Image upload ---
+
+// Trigger hidden file picker
+function triggerImageUpload() {
+  fileInput.value?.click();
+}
+
+// Handle file selection from the file picker
+async function handleFileUpload(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const files = input.files;
   if (!files?.length) return;
-  e.preventDefault();
+  await uploadAndInsert(files);
+  // Reset so the same file can be selected again
+  input.value = "";
+}
+
+// Upload files to API and insert markdown into content at cursor position
+async function uploadAndInsert(files: FileList | File[]) {
   uploading.value = true;
   try {
     const formData = new FormData();
     for (const file of files) formData.append("images", file);
     const res = await api.post("/images/upload", formData);
-    const urls = res.data.data.map((img: any) => img.url);
+    const urls: string[] = res.data.data.map((img: any) => img.url);
     const markdown = urls.map((url: string) => `![](${url})`).join("\n");
-    form.value.content += "\n" + markdown;
+
+    // Insert at cursor position if textarea exists, otherwise append
+    const textarea = document.querySelector("textarea") as HTMLTextAreaElement;
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const text = form.value.content;
+      const insertStr = (start > 0 && text[start - 1] !== "\n" ? "\n" : "") + markdown + "\n";
+      form.value.content = text.slice(0, start) + insertStr + text.slice(start);
+    } else {
+      form.value.content += "\n" + markdown;
+    }
   } catch {
     alert("图片上传失败");
   } finally {
     uploading.value = false;
   }
+}
+
+// Drag-and-drop upload (reuses uploadAndInsert)
+async function handleDrop(e: DragEvent) {
+  const files = e.dataTransfer?.files;
+  if (!files?.length) return;
+  e.preventDefault();
+  await uploadAndInsert(files);
 }
 
 async function save(draft: boolean) {

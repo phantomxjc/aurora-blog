@@ -1,11 +1,17 @@
 export function slugify(text: string): string {
-  return text
+  const slug = text
     .toString()
     .toLowerCase()
     .trim()
     .replace(/[\s\W-]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
+
+  // If slug is empty (e.g. non-ASCII title like Chinese), use a timestamp fallback
+  if (!slug) {
+    return `post-${Date.now().toString(36)}`;
+  }
+  return slug;
 }
 
 export function formatDate(date: Date): string {
