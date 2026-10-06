@@ -1,8 +1,0 @@
-node_modules
-.next
-dist
-*.db
-uploads
-.env
-next-env.d.ts
-*.log
