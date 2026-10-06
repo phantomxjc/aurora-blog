@@ -1,0 +1,97 @@
+name: Build & Push Docker Images
+
+# 什么时候跑：
+# · 推送到 main 分支 → 构建并推 latest
+# · 打 v* 标签（如 v1.0.0） → 额外推版本号标签
+# · 也可以在 Actions 页面手动点「Run workflow」
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    # GHCR 用内置 token，零配置；Docker Hub 可选
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      # 4 个镜像并行构建
+      matrix:
+        include:
+          - image: aurora-blog-api
+            context: ./api
+          - image: aurora-blog-blog
+            context: ./blog
+          - image: aurora-blog-admin
+            context: ./admin
+          - image: aurora-blog-proxy
+            context: .
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 准备 Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ── GHCR：GitHub 自带镜像仓库，零配置，用内置 token ──
+      - name: 登录 GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Docker Hub 可选：配了 DOCKERHUB_USERNAME / DOCKERHUB_TOKEN 才启用 ──
+      - name: 登录 Docker Hub（可选）
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 生成镜像标签
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+
+      - name: 构建并推送到 GHCR
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+
+      # ── 把镜像原样搬运到 Docker Hub（不重新构建）──
+      - name: 同步到 Docker Hub（可选）
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' }}
+        run: |
+          set -e
+          for ref in ${{ steps.meta.outputs.tags }}; do
+            tag="${ref##*:}"
+            target="docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}:${tag}"
+            echo "→ $ref ⇒ $target"
+            docker buildx imagetools create -t "$target" "$ref"
+          done
+
+      - name: 汇总
+        run: |
+          echo "### ${{ matrix.image }} 已发布 🎉" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
