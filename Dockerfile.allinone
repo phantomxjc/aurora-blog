@@ -1,0 +1,49 @@
+# ===== Stage 1: Build API =====
+FROM node:18-alpine AS api-build
+WORKDIR /app/api
+COPY api/package*.json ./
+RUN npm ci
+COPY api/ ./
+RUN npx prisma generate
+
+# ===== Stage 2: Build Blog (Next.js) =====
+FROM node:18-alpine AS blog-build
+WORKDIR /app/blog
+COPY blog/package*.json ./
+RUN npm ci
+COPY blog/ ./
+RUN npx next build
+
+# ===== Stage 3: Build Admin (Vue 3) =====
+FROM node:18-alpine AS admin-build
+WORKDIR /app/admin
+COPY admin/package*.json ./
+RUN npm ci
+COPY admin/ ./
+RUN npx vite build
+
+# ===== Final: All-in-one =====
+FROM node:18-alpine
+WORKDIR /app
+
+# PM2 进程管理 + 静态文件服务器
+RUN npm install -g pm2 serve
+
+# API（含 deps + prisma client）
+COPY --from=api-build /app/api ./api
+# Blog（含 deps + .next 构建产物）
+COPY --from=blog-build /app/blog ./blog
+# Admin 静态文件
+COPY --from=admin-build /app/admin/dist ./admin/dist
+# Proxy + 配置
+COPY proxy.js ./
+COPY ecosystem.config.js ./
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+VOLUME /data
+
+# 对外暴露 4 个端口
+EXPOSE 9090 3000 3002 5174
+
+ENTRYPOINT ["./entrypoint.sh"]
