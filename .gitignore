@@ -1,0 +1,13 @@
+node_modules
+.next
+dist
+*.db
+uploads
+.env
+next-env.d.ts
+*.log
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+admin/public/
+ecosystem.deploy.js
