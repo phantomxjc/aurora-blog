@@ -1,0 +1,37 @@
+/* 暮色紫调 - 紫色主导暖调主题 */
+.theme-aurora-twilight{font-family:var(--font-sans);font-size:1.05rem;color:#4c1d95;line-height:1.85;background:#faf5ff;border-radius:12px;padding:1rem 0}
+.theme-aurora-twilight p{margin:1.25rem 0;line-height:1.85}
+.theme-aurora-twilight h1,.theme-aurora-twilight h2,.theme-aurora-twilight h3,.theme-aurora-twilight h4{font-family:var(--font-serif);color:#3b0764;letter-spacing:-.02em}
+.theme-aurora-twilight h1{font-size:2rem;font-weight:700;margin:2rem 0 1rem}
+.theme-aurora-twilight h2{font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;padding-left:1rem;border-left:4px solid #a855f7;border-radius:0 4px 4px 0}
+.theme-aurora-twilight h3{font-size:1.25rem;font-weight:600;margin:2rem 0 .8rem}
+.theme-aurora-twilight h4{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .5rem}
+.theme-aurora-twilight strong{color:#7e22ce;font-weight:600}
+.theme-aurora-twilight em{color:#a855f7;font-style:italic}
+.theme-aurora-twilight a{color:#a855f7;text-decoration:none;border-bottom:1px solid transparent;transition:all .2s}
+.theme-aurora-twilight a:hover{border-bottom-color:#a855f7}
+.theme-aurora-twilight blockquote{margin:1.5rem 0;padding:1rem 1.5rem;background:rgba(168,85,247,0.05);border-left:3px solid #c084fc;border-radius:0 12px 12px 0;font-style:italic}
+.theme-aurora-twilight blockquote p{margin:.5rem 0}
+.theme-aurora-twilight code{background:#f3e8ff;color:#9333ea;padding:.15em .4em;border-radius:4px;font-size:.875em;font-family:var(--font-mono)}
+.theme-aurora-twilight pre{background:#2e1065;color:#f3e8ff;padding:1.25rem 1.5rem;border-radius:12px;overflow-x:auto;margin:1.5rem 0;box-shadow:0 4px 20px rgba(168,85,247,0.08)}
+.theme-aurora-twilight pre code{background:none;color:inherit;padding:0;font-size:.875em}
+.theme-aurora-twilight ul,.theme-aurora-twilight ol{margin:1.25rem 0;padding-left:1.75rem}
+.theme-aurora-twilight li{margin:.5rem 0;line-height:1.8}
+.theme-aurora-twilight ul li::marker{color:#a855f7}
+.theme-aurora-twilight ol li::marker{color:#a855f7;font-weight:600}
+.theme-aurora-twilight table{width:100%;border-collapse:collapse;margin:1.5rem 0;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(168,85,247,0.08)}
+.theme-aurora-twilight th{background:#f3e8ff;color:#3b0764;font-weight:600;padding:.75rem 1rem;text-align:left;border-bottom:2px solid #e9d5ff}
+.theme-aurora-twilight td{padding:.75rem 1rem;border-bottom:1px solid #e9d5ff;color:#4c1d95}
+.theme-aurora-twilight tr:last-child td{border-bottom:none}
+.theme-aurora-twilight tr:hover td{background:rgba(168,85,247,0.05)}
+.theme-aurora-twilight hr{border:none;height:1px;margin:2.5rem 0;background:linear-gradient(to right,transparent,#e9d5ff,#a855f7,#e9d5ff,transparent)}
+.theme-aurora-twilight img{border-radius:12px;margin:1.5rem 0;box-shadow:0 4px 20px rgba(168,85,247,0.08);max-width:100%}
+.theme-aurora-twilight .poem{background:#f3e8ff;border:1px solid #e9d5ff;border-radius:12px;padding:2rem;margin:1.5rem 0;box-shadow:0 4px 20px rgba(168,85,247,0.08)}
+.theme-aurora-twilight .pt{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;text-align:center;color:#3b0764;margin-bottom:.5rem}
+.theme-aurora-twilight .pa{text-align:center;font-size:.9rem;color:#a855f7;margin-bottom:1.5rem;opacity:.8}
+.theme-aurora-twilight .pb{text-align:center;font-size:1.1rem;line-height:2.2;color:#4c1d95;letter-spacing:.04em}
+.theme-aurora-twilight .pb .ln{display:block}
+.theme-aurora-twilight .seal{display:inline-flex;align-items:center;justify-content:center;background:#a855f7;color:#fff;font-size:.75rem;padding:.3rem .8rem;border-radius:6px;margin-top:1rem;opacity:.9}
+.theme-aurora-twilight .ac{background:#f3e8ff;border:1px solid #e9d5ff;border-radius:12px;padding:1.5rem;margin:1.5rem 0}
+.theme-aurora-twilight .ac .cl{display:inline-block;font-size:.8rem;color:#a855f7;letter-spacing:.1em;margin-bottom:.8rem;font-weight:600;text-transform:uppercase}
+.theme-aurora-twilight .ac p{margin:.6rem 0;line-height:1.8}

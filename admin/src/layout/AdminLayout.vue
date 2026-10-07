@@ -1,10 +1,10 @@
 <template>
-  <div class="flex min-h-screen bg-gray-50">
+  <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <aside :class="[collapsed ? 'w-16' : 'w-60']" class="fixed top-0 left-0 bottom-0 bg-gradient-to-b from-slate-900 to-slate-800 z-50 transition-all duration-300">
+    <aside :class="[collapsed ? 'w-16' : 'w-64']" class="fixed top-0 left-0 bottom-0 z-50 transition-all duration-300 overflow-hidden" style="background:linear-gradient(180deg,#0f172a 0%,#1e1b4b 50%,#312e81 100%)">
       <!-- Logo -->
       <div class="h-16 flex items-center justify-center border-b border-white/10">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-aurora-400 via-purple-400 to-pink-400 flex items-center justify-center shadow-lg">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#38bdf8,#a855f7,#ec4899)">
           <span class="text-lg">🌌</span>
         </div>
         <span v-if="!collapsed" class="ml-2 text-lg font-bold text-white">Aurora</span>
@@ -13,20 +13,29 @@
       <!-- Menu -->
       <nav class="p-3 space-y-1">
         <RouterLink v-for="item in menu" :key="item.path" :to="item.path"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
-          :class="isActive(item.path) ? 'bg-aurora-500 text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'">
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+          :class="isActive(item.path) ? 'text-white shadow-lg' : 'text-gray-400 hover:text-white hover:bg-white/5'"
+          :style="isActive(item.path) ? { background: 'linear-gradient(135deg,#0ea5e9,#6366f1)' } : {}">
           <span class="text-lg flex-shrink-0">{{ item.icon }}</span>
           <span v-if="!collapsed">{{ item.label }}</span>
         </RouterLink>
       </nav>
+
+      <!-- Bottom decoration -->
+      <div v-if="!collapsed" class="absolute bottom-0 left-0 right-0 p-4">
+        <div class="rounded-2xl p-4 text-center" style="background:rgba(255,255,255,0.05);backdrop-filter:blur(10px)">
+          <div class="text-2xl mb-1">✨</div>
+          <p class="text-xs text-gray-400">Aurora Blog System</p>
+        </div>
+      </div>
     </aside>
 
     <!-- Main -->
-    <div :class="[collapsed ? 'ml-16' : 'ml-60']" class="flex-1 transition-all duration-300">
+    <div :class="[collapsed ? 'ml-16' : 'ml-64']" class="flex-1 transition-all duration-300">
       <!-- Header -->
-      <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-40">
+      <header class="h-16 glass border-b border-white/20 flex items-center justify-between px-6 sticky top-0 z-40">
         <div class="flex items-center gap-4">
-          <button @click="collapsed = !collapsed" class="p-2 rounded-lg hover:bg-gray-100 transition-all">
+          <button @click="collapsed = !collapsed" class="p-2 rounded-lg hover:bg-aurora-50 transition-all">
             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
           <h1 class="text-lg font-semibold text-gray-800">{{ currentLabel }}</h1>
@@ -38,14 +47,14 @@
             访问主页
           </a>
           <div class="relative" ref="userMenuRef">
-            <button @click="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-all">
-              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-aurora-400 to-purple-400 flex items-center justify-center text-white text-sm font-medium">
+            <button @click="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-aurora-50 transition-all">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium" style="background:linear-gradient(135deg,#38bdf8,#a855f7)">
                 {{ auth.user?.username?.[0]?.toUpperCase() || "A" }}
               </div>
               <span class="text-sm text-gray-600">{{ auth.user?.username || "admin" }}</span>
             </button>
             <div v-if="userMenuOpen" class="absolute right-0 top-12 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 animate-fade-in">
-              <button @click="router.push('/settings'); userMenuOpen = false" class="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50">⚙ 个人设置</button>
+              <button @click="router.push('/settings'); userMenuOpen = false" class="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-aurora-50">⚙ 个人设置</button>
               <div class="border-t border-gray-100 my-1"></div>
               <button @click="logout" class="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-50">🚪 退出登录</button>
             </div>
@@ -77,7 +86,6 @@ const route = useRoute();
 const auth = useAuthStore();
 const collapsed = ref(false);
 
-// Homepage URL from settings or default
 const homeUrl = ref("/");
 async function fetchHomeUrl() {
   try {
@@ -88,13 +96,12 @@ async function fetchHomeUrl() {
 const userMenuOpen = ref(false);
 const userMenuRef = ref<HTMLElement>();
 
-// Auto-logout
 const showWarning = ref(false);
 const warningCountdown = ref(0);
 let idleTimer: ReturnType<typeof setInterval> | null = null;
 let countdownTimer: ReturnType<typeof setInterval> | null = null;
 let lastActivity = Date.now();
-const WARNING_BEFORE = 60; // Show warning 60s before logout
+const WARNING_BEFORE = 60;
 
 const menu = [
   { path: "/", label: "仪表盘", icon: "📊" },
@@ -127,38 +134,22 @@ function handleClickOutside(e: MouseEvent) {
   if (userMenuRef.value && !userMenuRef.value.contains(e.target as Node)) userMenuOpen.value = false;
 }
 
-// === Auto-logout logic ===
-function resetActivity() {
-  lastActivity = Date.now();
-  showWarning.value = false;
-}
+function resetActivity() { lastActivity = Date.now(); showWarning.value = false; }
 
 function checkIdle() {
   if (!auth.autoLogoutSeconds || auth.autoLogoutSeconds <= 0) return;
   const idle = (Date.now() - lastActivity) / 1000;
   const remaining = auth.autoLogoutSeconds - idle;
-
-  if (remaining <= 0) {
-    // Time's up — logout
-    stopAutoLogout();
-    auth.logout();
-    router.push("/login");
-  } else if (remaining <= WARNING_BEFORE) {
-    // Show warning countdown
-    showWarning.value = true;
-    warningCountdown.value = remaining;
-  } else {
-    showWarning.value = false;
-  }
+  if (remaining <= 0) { stopAutoLogout(); auth.logout(); router.push("/login"); }
+  else if (remaining <= WARNING_BEFORE) { showWarning.value = true; warningCountdown.value = remaining; }
+  else { showWarning.value = false; }
 }
 
 function startAutoLogout() {
   if (!auth.autoLogoutSeconds || auth.autoLogoutSeconds <= 0) return;
   stopAutoLogout();
   lastActivity = Date.now();
-  // Check every second
   idleTimer = setInterval(checkIdle, 1000);
-  // Listen for user activity
   window.addEventListener("mousemove", resetActivity);
   window.addEventListener("keydown", resetActivity);
   window.addEventListener("click", resetActivity);

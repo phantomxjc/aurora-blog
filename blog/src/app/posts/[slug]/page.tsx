@@ -19,8 +19,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function PostPage({ params }: { params: { slug: string } }) {
   let post: any;
   let relatedPosts: any[] = [];
+  let settings: Record<string, string> = {};
   try {
-    post = await getPost(params.slug);
+    [post, settings] = await Promise.all([
+      getPost(params.slug),
+      getSettings().catch(() => ({})),
+    ]);
     const all = await getPosts({ limit: 20 });
     relatedPosts = (all.data || []).filter((p: any) => p.slug !== params.slug && p.category === post.category).slice(0, 3);
   } catch {
@@ -30,6 +34,9 @@ export default async function PostPage({ params }: { params: { slug: string } })
   // 自动封面：无封面时使用随机封面图
   const cover = getPostCover(post.coverImage, post.slug);
   const hasCover = !!post.coverImage;
+
+  // 从 settings 读取渲染主题，默认 aurora-default
+  const postTheme = settings.postTheme || "aurora-default";
 
   return (
     <div className="pt-16">
@@ -68,7 +75,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           <ArrowLeft className="w-4 h-4" /> 返回首页
         </Link>
 
-        <PostContent content={post.content} />
+        <PostContent content={post.content} theme={postTheme} />
 
         {/* Tags */}
         {post.tags?.length > 0 && (

@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
         <h2 class="text-xl font-semibold text-gray-800">文章管理</h2>
-        <span class="text-sm text-gray-400">({{ total }} 篇)</span>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-aurora-50 text-aurora-600">{{ total }} 篇</span>
       </div>
       <button @click="router.push('/posts/new')" class="btn-primary">✍️ 写新文章</button>
     </div>
@@ -16,15 +16,15 @@
         <option value="">全部分类</option>
         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
-      <label class="flex items-center gap-2 text-sm text-gray-500">
-        <input type="checkbox" v-model="includeDrafts" @change="fetchPosts" class="rounded" /> 包含草稿
+      <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer">
+        <input type="checkbox" v-model="includeDrafts" @change="fetchPosts" class="w-4 h-4 rounded text-aurora-500" /> 包含草稿
       </label>
     </div>
 
     <!-- Posts Table -->
     <div class="card overflow-hidden">
       <table class="w-full">
-        <thead class="bg-gray-50 border-b border-gray-100">
+        <thead class="bg-aurora-50/50 border-b border-gray-100">
           <tr>
             <th class="text-left px-4 py-3 text-sm font-medium text-gray-500">标题</th>
             <th class="text-left px-4 py-3 text-sm font-medium text-gray-500">分类</th>
@@ -36,7 +36,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-50">
-          <tr v-for="post in posts" :key="post.id" class="hover:bg-gray-50 transition-all">
+          <tr v-for="post in posts" :key="post.id" class="hover:bg-aurora-50/30 transition-all duration-200">
             <td class="px-4 py-3">
               <div class="flex items-center gap-2">
                 <span v-if="post.pinned" class="text-aurora-500">📌</span>
@@ -54,21 +54,24 @@
             <td class="px-4 py-3">
               <span :class="post.draft ? 'badge-warning' : 'badge-success'">{{ post.draft ? '草稿' : '已发布' }}</span>
             </td>
-            <td class="px-4 py-3 text-right">
-              <button @click="router.push(`/posts/${post.slug}/edit`)" class="text-sm text-aurora-600 hover:text-aurora-700 mr-3">编辑</button>
-              <button @click="deletePost(post)" class="text-sm text-red-500 hover:text-red-600">删除</button>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
+              <button @click="router.push(`/posts/${post.slug}/edit`)" class="text-sm text-aurora-600 hover:text-aurora-700 mr-3 transition-colors">编辑</button>
+              <button @click="deletePost(post)" class="text-sm text-red-500 hover:text-red-600 transition-colors">删除</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <div v-if="!posts.length" class="text-center py-12 text-gray-400">暂无文章</div>
+      <div v-if="!posts.length" class="text-center py-12 text-gray-400">
+        <span class="text-4xl block mb-2">📋</span>暂无文章
+      </div>
     </div>
 
     <!-- Pagination -->
     <div v-if="total > limit" class="flex items-center justify-center gap-2">
       <button v-for="p in totalPages" :key="p" @click="page = p; fetchPosts()"
-        :class="p === page ? 'bg-aurora-500 text-white' : 'bg-white text-gray-600 border border-gray-200'"
-        class="w-9 h-9 rounded-lg text-sm font-medium transition-all">{{ p }}</button>
+        :class="p === page ? 'text-white shadow-lg' : 'bg-white text-gray-600 border border-gray-200 hover:border-aurora-300'"
+        :style="p === page ? { background: 'linear-gradient(135deg,#0ea5e9,#6366f1)' } : {}"
+        class="w-9 h-9 rounded-xl text-sm font-medium transition-all">{{ p }}</button>
     </div>
   </div>
 </template>
@@ -106,7 +109,6 @@ async function fetchPosts() {
     });
     posts.value = res.data.data || [];
     total.value = res.data.total || 0;
-    // Extract categories
     const cats = new Set<string>();
     posts.value.forEach((p) => { if (p.category) cats.add(p.category); });
     categories.value = [...cats];

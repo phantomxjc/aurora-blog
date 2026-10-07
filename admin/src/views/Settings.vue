@@ -85,6 +85,40 @@
       </div>
     </div>
 
+    <!-- Post Render Theme Selector -->
+    <div class="card p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-gray-700">文章渲染主题</h3>
+          <p class="text-sm text-gray-400 mt-1">选择 Markdown 文章的渲染风格，所有文章将使用此主题</p>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-medium bg-aurora-50 text-aurora-600">{{ currentThemeLabel }}</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div
+          v-for="theme in postThemes"
+          :key="theme.id"
+          @click="settings.postTheme = theme.id"
+          class="relative cursor-pointer rounded-2xl border-2 transition-all duration-200 overflow-hidden"
+          :class="settings.postTheme === theme.id ? 'border-aurora-500 shadow-lg shadow-aurora-200/50 scale-105' : 'border-gray-100 hover:border-aurora-200 hover:shadow-md'"
+        >
+          <div class="h-24 flex flex-col items-center justify-center p-3" :style="{ background: theme.bg === 'transparent' ? '#ffffff' : theme.bg }">
+            <div class="w-full h-1.5 rounded-full mb-2" :style="{ background: theme.primary, opacity: 0.8 }"></div>
+            <div class="w-3/4 h-1.5 rounded-full mb-1.5" :style="{ background: theme.primary, opacity: 0.4 }"></div>
+            <div class="w-5/6 h-1.5 rounded-full mb-1.5" :style="{ background: theme.primary, opacity: 0.3 }"></div>
+            <div class="w-2/3 h-1.5 rounded-full" :style="{ background: theme.primary, opacity: 0.2 }"></div>
+          </div>
+          <div class="px-3 py-2.5 bg-white">
+            <div class="text-sm font-medium text-gray-700">{{ theme.label }}</div>
+            <div class="text-xs text-gray-400 truncate">{{ theme.desc }}</div>
+          </div>
+          <div v-if="settings.postTheme === theme.id" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-aurora-500 flex items-center justify-center shadow-lg">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- About Page Text -->
     <div class="card p-6 space-y-4">
       <h3 class="font-semibold text-gray-700">关于页面文字</h3>
@@ -215,8 +249,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import api from "@/api";
+import { POST_THEMES } from "@/constants/themes";
+
+const postThemes = POST_THEMES;
 
 const settings = ref({
   siteName: "", siteDescription: "", siteSlogan: "", siteAuthor: "", siteAuthorUrl: "", siteUrl: "",
@@ -227,6 +264,7 @@ const settings = ref({
   aboutTitle: "", aboutDescription: "", aboutFeaturesTitle: "",
   aboutTechStackTitle: "", aboutDeveloperTitle: "", aboutDeveloperRole: "",
   aboutContactTitle: "", aboutContactText: "",
+  postTheme: "aurora-default",
 });
 const social = ref({ github: "", twitter: "", email: "" });
 const captchaEnabled = ref(true);
@@ -236,6 +274,11 @@ const saving = ref(false);
 const oldPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
+
+const currentThemeLabel = computed(() => {
+  const t = postThemes.find((t: any) => t.id === settings.value.postTheme);
+  return t ? t.label : "极光默认";
+});
 
 async function fetchSettings() {
   try {
@@ -257,6 +300,7 @@ async function fetchSettings() {
       aboutFeaturesTitle: data.aboutFeaturesTitle || "", aboutTechStackTitle: data.aboutTechStackTitle || "",
       aboutDeveloperTitle: data.aboutDeveloperTitle || "", aboutDeveloperRole: data.aboutDeveloperRole || "",
       aboutContactTitle: data.aboutContactTitle || "", aboutContactText: data.aboutContactText || "",
+      postTheme: data.postTheme || "aurora-default",
     };
     if (data.socialLinks) {
       try { social.value = JSON.parse(data.socialLinks); } catch {}

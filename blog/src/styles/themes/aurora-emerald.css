@@ -1,0 +1,37 @@
+/* 翡翠流光 - 翡翠绿青色主题 */
+.theme-aurora-emerald{font-family:var(--font-sans);font-size:1.05rem;color:#166534;line-height:1.85;background:#f0fdf4;border-radius:12px;padding:1rem 0}
+.theme-aurora-emerald p{margin:1.25rem 0;line-height:1.85}
+.theme-aurora-emerald h1,.theme-aurora-emerald h2,.theme-aurora-emerald h3,.theme-aurora-emerald h4{font-family:var(--font-serif);color:#052e16;letter-spacing:-.02em}
+.theme-aurora-emerald h1{font-size:2rem;font-weight:700;margin:2rem 0 1rem}
+.theme-aurora-emerald h2{font-size:1.5rem;font-weight:700;margin:2.5rem 0 1rem;padding-left:1rem;border-left:4px solid #10b981;border-radius:0 4px 4px 0}
+.theme-aurora-emerald h3{font-size:1.25rem;font-weight:600;margin:2rem 0 .8rem}
+.theme-aurora-emerald h4{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .5rem}
+.theme-aurora-emerald strong{color:#047857;font-weight:600}
+.theme-aurora-emerald em{color:#10b981;font-style:italic}
+.theme-aurora-emerald a{color:#10b981;text-decoration:none;border-bottom:1px solid transparent;transition:all .2s}
+.theme-aurora-emerald a:hover{border-bottom-color:#10b981}
+.theme-aurora-emerald blockquote{margin:1.5rem 0;padding:1rem 1.5rem;background:rgba(16,185,129,0.05);border-left:3px solid #34d399;border-radius:0 12px 12px 0;font-style:italic}
+.theme-aurora-emerald blockquote p{margin:.5rem 0}
+.theme-aurora-emerald code{background:#ecfdf5;color:#059669;padding:.15em .4em;border-radius:4px;font-size:.875em;font-family:var(--font-mono)}
+.theme-aurora-emerald pre{background:#022c22;color:#d1fae5;padding:1.25rem 1.5rem;border-radius:12px;overflow-x:auto;margin:1.5rem 0;box-shadow:0 4px 20px rgba(16,185,129,0.08)}
+.theme-aurora-emerald pre code{background:none;color:inherit;padding:0;font-size:.875em}
+.theme-aurora-emerald ul,.theme-aurora-emerald ol{margin:1.25rem 0;padding-left:1.75rem}
+.theme-aurora-emerald li{margin:.5rem 0;line-height:1.8}
+.theme-aurora-emerald ul li::marker{color:#10b981}
+.theme-aurora-emerald ol li::marker{color:#10b981;font-weight:600}
+.theme-aurora-emerald table{width:100%;border-collapse:collapse;margin:1.5rem 0;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(16,185,129,0.08)}
+.theme-aurora-emerald th{background:#ecfdf5;color:#052e16;font-weight:600;padding:.75rem 1rem;text-align:left;border-bottom:2px solid #d1fae5}
+.theme-aurora-emerald td{padding:.75rem 1rem;border-bottom:1px solid #d1fae5;color:#166534}
+.theme-aurora-emerald tr:last-child td{border-bottom:none}
+.theme-aurora-emerald tr:hover td{background:rgba(16,185,129,0.05)}
+.theme-aurora-emerald hr{border:none;height:1px;margin:2.5rem 0;background:linear-gradient(to right,transparent,#d1fae5,#10b981,#d1fae5,transparent)}
+.theme-aurora-emerald img{border-radius:12px;margin:1.5rem 0;box-shadow:0 4px 20px rgba(16,185,129,0.08);max-width:100%}
+.theme-aurora-emerald .poem{background:#ecfdf5;border:1px solid #d1fae5;border-radius:12px;padding:2rem;margin:1.5rem 0;box-shadow:0 4px 20px rgba(16,185,129,0.08)}
+.theme-aurora-emerald .pt{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;text-align:center;color:#052e16;margin-bottom:.5rem}
+.theme-aurora-emerald .pa{text-align:center;font-size:.9rem;color:#10b981;margin-bottom:1.5rem;opacity:.8}
+.theme-aurora-emerald .pb{text-align:center;font-size:1.1rem;line-height:2.2;color:#166534;letter-spacing:.04em}
+.theme-aurora-emerald .pb .ln{display:block}
+.theme-aurora-emerald .seal{display:inline-flex;align-items:center;justify-content:center;background:#10b981;color:#fff;font-size:.75rem;padding:.3rem .8rem;border-radius:6px;margin-top:1rem;opacity:.9}
+.theme-aurora-emerald .ac{background:#ecfdf5;border:1px solid #d1fae5;border-radius:12px;padding:1.5rem;margin:1.5rem 0}
+.theme-aurora-emerald .ac .cl{display:inline-block;font-size:.8rem;color:#10b981;letter-spacing:.1em;margin-bottom:.8rem;font-weight:600;text-transform:uppercase}
+.theme-aurora-emerald .ac p{margin:.6rem 0;line-height:1.8}

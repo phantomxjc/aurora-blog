@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-aurora-900 to-purple-900">
+  <div class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-aurora-800 to-purple-900">
     <!-- Animated background -->
     <div class="absolute top-20 left-20 w-72 h-72 bg-aurora-500/20 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
@@ -55,7 +55,7 @@
           </div>
 
           <button type="submit" :disabled="loading"
-            class="w-full py-3 rounded-xl bg-gradient-to-r from-aurora-500 to-purple-500 text-white font-medium hover:shadow-xl hover:shadow-aurora-500/30 transition-all disabled:opacity-50">
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-aurora-500 to-indigo-500 text-white font-medium hover:shadow-xl hover:shadow-aurora-500/30 transition-all disabled:opacity-50">
             <span v-if="loading">登录中...</span>
             <span v-else>登 录</span>
           </button>

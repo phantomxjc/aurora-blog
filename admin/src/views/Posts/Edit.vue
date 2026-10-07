@@ -21,7 +21,7 @@
         <!-- Markdown Editor -->
         <div class="card overflow-hidden">
           <!-- Toolbar -->
-          <div class="flex items-center gap-1 px-3 py-2 border-b border-gray-100 bg-gray-50 flex-wrap">
+          <div class="flex items-center gap-1 px-3 py-2 border-b border-gray-100 bg-aurora-50/50 flex-wrap">
             <button v-for="btn in toolbar" :key="btn.label" @click="insertMarkdown(btn)"
               class="px-2.5 py-1.5 rounded-lg hover:bg-white text-sm text-gray-600 transition-all" :title="btn.label">
               {{ btn.icon }}

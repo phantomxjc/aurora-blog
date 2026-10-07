@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./themes.css";
 
 :root {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
