@@ -1,23 +1,55 @@
 import { Router } from "express";
 import { prisma } from "../utils/db.js";
 import { generateToken, hashPassword, verifyPassword } from "../utils/auth.js";
+import { createCaptcha, verifyCaptcha } from "../utils/captcha.js";
 
 const router = Router();
 
+// Get captcha image
+router.get("/captcha", (_req, res) => {
+  const { id, image } = createCaptcha();
+  res.json({ id, image });
+});
+
+// Helper: get a setting value
+async function getSetting(key: string): Promise<string | null> {
+  const setting = await prisma.setting.findUnique({ where: { configKey: key } });
+  return setting?.value || null;
+}
+
 // Login
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, captchaId, captchaCode } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: "请输入用户名和密码" });
   }
+
+  // Check if captcha is enabled
+  const captchaEnabled = (await getSetting("captchaEnabled")) !== "false";
+  if (captchaEnabled) {
+    if (!captchaId || !captchaCode) {
+      return res.status(400).json({ error: "请输入验证码" });
+    }
+    if (!verifyCaptcha(captchaId, captchaCode)) {
+      return res.status(400).json({ error: "验证码错误或已过期" });
+    }
+  }
+
   const user = await prisma.user.findUnique({ where: { username } });
   if (!user || !verifyPassword(password, user.passwordHash)) {
     return res.status(401).json({ error: "用户名或密码错误" });
   }
-  const token = generateToken(user.id, user.username);
+
+  // Determine token expiration based on auto-logout settings
+  const autoLogoutEnabled = (await getSetting("autoLogoutEnabled")) !== "false";
+  const autoLogoutMinutes = parseInt((await getSetting("autoLogoutMinutes")) || "30", 10);
+  const expiresIn = autoLogoutEnabled ? `${autoLogoutMinutes}m` : "7d";
+
+  const token = generateToken(user.id, user.username, expiresIn);
   res.json({
     token,
     user: { id: user.id, username: user.username, email: user.email, avatar: user.avatar, role: user.role },
+    autoLogout: autoLogoutEnabled ? autoLogoutMinutes * 60 : 0,
   });
 });
 

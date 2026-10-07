@@ -1,4 +1,4 @@
-import { getPost, getPosts } from "@/lib/api";
+import { getPost, getPosts, getSettings } from "@/lib/api";
 export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -10,9 +10,9 @@ import { getPostCover } from "@/lib/coverImage";
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   try {
     const post = await getPost(params.slug);
-    return { title: `${post.title} - Aurora Blog`, description: post.description };
+    const s = await getSettings().catch(() => ({})); return { title: `${post.title} - ${s.siteName || "Aurora Blog"}`, description: post.description };
   } catch {
-    return { title: "Aurora Blog" };
+    const s = await getSettings().catch(() => ({})); return { title: s.siteName || "Aurora Blog" };
   }
 }
 

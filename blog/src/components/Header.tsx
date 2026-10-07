@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Search, Menu, X, Sparkles, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navLinks = [
+const defaultNavLinks = [
   { label: "首页", href: "/" },
   { label: "归档", href: "/archive" },
   { label: "标签", href: "/tags" },
@@ -16,11 +16,31 @@ const navLinks = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [siteName, setSiteName] = useState("Aurora");
+  const [navLinks, setNavLinks] = useState(defaultNavLinks);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    // Fetch settings for site name and nav links
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.siteName) setSiteName(data.siteName);
+        if (data.navLinks) {
+          try {
+            const links = JSON.parse(data.navLinks);
+            if (Array.isArray(links) && links.length > 0) {
+              setNavLinks(links.map((l: any) => ({ label: l.label, href: l.url })));
+            }
+          } catch {}
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -35,7 +55,7 @@ export default function Header() {
           >
             <Sparkles className="w-5 h-5 text-white" />
           </motion.div>
-          <span className="text-lg font-bold gradient-text">Aurora</span>
+          <span className="text-lg font-bold gradient-text">{siteName}</span>
         </Link>
 
         {/* Desktop Nav */}

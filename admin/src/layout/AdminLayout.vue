@@ -54,6 +54,11 @@
         <RouterView />
       </main>
     </div>
+
+    <!-- Auto-logout warning toast -->
+    <div v-if="showWarning" class="fixed bottom-6 right-6 z-[100] bg-red-500 text-white px-5 py-3 rounded-xl shadow-lg animate-fade-up">
+      ⏰ {{ Math.ceil(warningCountdown) }} 秒后因长时间无操作自动退出登录
+    </div>
   </div>
 </template>
 
@@ -68,6 +73,14 @@ const auth = useAuthStore();
 const collapsed = ref(false);
 const userMenuOpen = ref(false);
 const userMenuRef = ref<HTMLElement>();
+
+// Auto-logout
+const showWarning = ref(false);
+const warningCountdown = ref(0);
+let idleTimer: ReturnType<typeof setInterval> | null = null;
+let countdownTimer: ReturnType<typeof setInterval> | null = null;
+let lastActivity = Date.now();
+const WARNING_BEFORE = 60; // Show warning 60s before logout
 
 const menu = [
   { path: "/", label: "仪表盘", icon: "📊" },
@@ -91,6 +104,7 @@ function isActive(path: string) {
 
 function logout() {
   userMenuOpen.value = false;
+  stopAutoLogout();
   auth.logout();
   router.push("/login");
 }
@@ -99,9 +113,62 @@ function handleClickOutside(e: MouseEvent) {
   if (userMenuRef.value && !userMenuRef.value.contains(e.target as Node)) userMenuOpen.value = false;
 }
 
+// === Auto-logout logic ===
+function resetActivity() {
+  lastActivity = Date.now();
+  showWarning.value = false;
+}
+
+function checkIdle() {
+  if (!auth.autoLogoutSeconds || auth.autoLogoutSeconds <= 0) return;
+  const idle = (Date.now() - lastActivity) / 1000;
+  const remaining = auth.autoLogoutSeconds - idle;
+
+  if (remaining <= 0) {
+    // Time's up — logout
+    stopAutoLogout();
+    auth.logout();
+    router.push("/login");
+  } else if (remaining <= WARNING_BEFORE) {
+    // Show warning countdown
+    showWarning.value = true;
+    warningCountdown.value = remaining;
+  } else {
+    showWarning.value = false;
+  }
+}
+
+function startAutoLogout() {
+  if (!auth.autoLogoutSeconds || auth.autoLogoutSeconds <= 0) return;
+  stopAutoLogout();
+  lastActivity = Date.now();
+  // Check every second
+  idleTimer = setInterval(checkIdle, 1000);
+  // Listen for user activity
+  window.addEventListener("mousemove", resetActivity);
+  window.addEventListener("keydown", resetActivity);
+  window.addEventListener("click", resetActivity);
+  window.addEventListener("scroll", resetActivity);
+}
+
+function stopAutoLogout() {
+  if (idleTimer) { clearInterval(idleTimer); idleTimer = null; }
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  showWarning.value = false;
+  window.removeEventListener("mousemove", resetActivity);
+  window.removeEventListener("keydown", resetActivity);
+  window.removeEventListener("click", resetActivity);
+  window.removeEventListener("scroll", resetActivity);
+}
+
 onMounted(() => {
   auth.loadUser();
   document.addEventListener("click", handleClickOutside);
+  startAutoLogout();
 });
-onUnmounted(() => document.removeEventListener("click", handleClickOutside));
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+  stopAutoLogout();
+});
 </script>

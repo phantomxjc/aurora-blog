@@ -4,8 +4,8 @@ import type { Request, Response, NextFunction } from "express";
 
 const JWT_SECRET = process.env.JWT_SECRET || "aurora-default-secret";
 
-export function generateToken(userId: number, username: string): string {
-  return jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: "7d" });
+export function generateToken(userId: number, username: string, expiresIn: string = "7d"): string {
+  return jwt.sign({ userId, username }, JWT_SECRET, { expiresIn });
 }
 
 export function hashPassword(password: string): string {

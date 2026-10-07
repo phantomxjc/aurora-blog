@@ -35,6 +35,21 @@
               placeholder="请输入密码" />
           </div>
 
+          <!-- Captcha -->
+          <div v-if="captchaEnabled">
+            <label class="block text-sm text-white/70 mb-2">验证码</label>
+            <div class="flex gap-3">
+              <input v-model="captchaCode" type="text" required maxlength="4"
+                class="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 focus:border-aurora-400 focus:ring-4 focus:ring-aurora-400/20 outline-none transition-all"
+                placeholder="请输入验证码" />
+              <img v-if="captchaImage" :src="captchaImage" @click="fetchCaptcha"
+                class="h-12 rounded-xl cursor-pointer border border-white/20 hover:border-aurora-400 transition-all" title="点击刷新" />
+              <div v-else class="w-[120px] h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center">
+                <span class="text-white/30 text-sm">加载中...</span>
+              </div>
+            </div>
+          </div>
+
           <div v-if="error" class="px-4 py-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-sm">
             {{ error }}
           </div>
@@ -53,9 +68,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import api from "@/api";
 
 const router = useRouter();
 const auth = useAuthStore();
@@ -64,16 +80,50 @@ const password = ref("admin123");
 const error = ref("");
 const loading = ref(false);
 
+// Captcha
+const captchaEnabled = ref(true);
+const captchaId = ref("");
+const captchaImage = ref("");
+const captchaCode = ref("");
+
+async function fetchCaptcha() {
+  try {
+    const res = await api.get("/auth/captcha");
+    captchaId.value = res.data.id;
+    captchaImage.value = res.data.image;
+    captchaCode.value = "";
+  } catch {
+    // If captcha endpoint fails, disable captcha
+    captchaEnabled.value = false;
+  }
+}
+
+async function checkCaptchaEnabled() {
+  try {
+    const res = await api.get("/settings");
+    captchaEnabled.value = res.data.captchaEnabled !== "false";
+  } catch {
+    captchaEnabled.value = true;
+  }
+}
+
 async function handleLogin() {
   error.value = "";
   loading.value = true;
   try {
-    await auth.login(username.value, password.value);
+    await auth.login(username.value, password.value, captchaId.value, captchaCode.value);
     router.push("/");
   } catch (e: any) {
     error.value = e.response?.data?.error || "登录失败，请重试";
+    // Refresh captcha on login failure
+    if (captchaEnabled.value) await fetchCaptcha();
   } finally {
     loading.value = false;
   }
 }
+
+onMounted(async () => {
+  await checkCaptchaEnabled();
+  if (captchaEnabled.value) await fetchCaptcha();
+});
 </script>

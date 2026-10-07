@@ -46,7 +46,9 @@ async function seed() {
   const defaultSettings = {
     siteName: "Aurora Blog",
     siteDescription: "一个设计精美的前后端分离博客系统",
-    siteAuthor: "Aurora",
+    siteSlogan: "用技术记录生活，用文字分享思考",
+    siteAuthor: "软件推手/phantomxjc",
+    siteAuthorUrl: "https://github.com/phantomxjc",
     siteUrl: "http://localhost:3000",
     navLinks: JSON.stringify([
       { label: "首页", url: "/" },
@@ -56,10 +58,14 @@ async function seed() {
       { label: "关于", url: "/about" },
     ]),
     socialLinks: JSON.stringify({
-      github: "https://github.com",
+      github: "https://github.com/phantomxjc",
       twitter: "",
       email: "admin@aurora.blog",
     }),
+    // Security settings
+    captchaEnabled: "true",
+    autoLogoutEnabled: "true",
+    autoLogoutMinutes: "30",
   };
   for (const [key, value] of Object.entries(defaultSettings)) {
     await prisma.setting.upsert({

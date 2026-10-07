@@ -18,12 +18,13 @@ export default async function HomePage() {
     // API not available
   }
 
+  const siteName = settings.siteName || "Aurora Blog";
   const featuredPosts = posts.filter((p) => p.pinned || p.featured).slice(0, 3);
   const latestPosts = posts.filter((p) => !p.pinned).slice(0, 6);
 
   return (
     <div className="pt-16">
-      <Hero siteName={settings.siteName || "Aurora Blog"} siteDescription={settings.siteDescription || ""} postCount={posts.length} />
+      <Hero siteName={siteName} siteDescription={settings.siteDescription || ""} postCount={posts.length} />
 
       {/* Featured Posts */}
       {featuredPosts.length > 0 && (
@@ -74,7 +75,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22none%22 stroke=%22white%22 stroke-opacity=%220.1%22/></svg>')] opacity-30" />
           <h2 className="text-3xl font-bold font-serif text-white mb-4 relative">开始你的写作之旅</h2>
           <p className="text-white/80 mb-6 relative max-w-xl mx-auto">
-            用 Markdown 记录想法，用技术分享知识。Aurora Blog 让写作变得简单而美好。
+            用 Markdown 记录想法，用技术分享知识。{siteName} 让写作变得简单而美好。
           </p>
           <Link
             href="/about"
