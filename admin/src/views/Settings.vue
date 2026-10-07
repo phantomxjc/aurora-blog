@@ -85,6 +85,49 @@
       </div>
     </div>
 
+    <!-- About Page Text -->
+    <div class="card p-6 space-y-4">
+      <h3 class="font-semibold text-gray-700">关于页面文字</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">关于本站（标题）</label>
+          <input v-model="settings.aboutTitle" class="input" placeholder="关于本站" />
+        </div>
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">技术特性（标题）</label>
+          <input v-model="settings.aboutFeaturesTitle" class="input" placeholder="技术特性" />
+        </div>
+      </div>
+      <div>
+        <label class="text-sm text-gray-500 mb-1 block">关于本站（描述）</label>
+        <textarea v-model="settings.aboutDescription" class="input h-20 resize-none" placeholder="站点介绍文字"></textarea>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">技术栈（标题）</label>
+          <input v-model="settings.aboutTechStackTitle" class="input" placeholder="技术栈" />
+        </div>
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">开发者（标题）</label>
+          <input v-model="settings.aboutDeveloperTitle" class="input" placeholder="开发者" />
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">开发者角色描述</label>
+          <input v-model="settings.aboutDeveloperRole" class="input" placeholder="全栈开发者 · 博客维护者" />
+        </div>
+        <div>
+          <label class="text-sm text-gray-500 mb-1 block">联系我（标题）</label>
+          <input v-model="settings.aboutContactTitle" class="input" placeholder="联系我" />
+        </div>
+      </div>
+      <div>
+        <label class="text-sm text-gray-500 mb-1 block">联系我（描述）</label>
+        <textarea v-model="settings.aboutContactText" class="input h-20 resize-none" placeholder="如果你对这个项目有任何问题或建议，欢迎通过以下方式联系我："></textarea>
+      </div>
+    </div>
+
     <!-- Social Links -->
     <div class="card p-6 space-y-4">
       <h3 class="font-semibold text-gray-700">社交链接</h3>
@@ -181,6 +224,9 @@ const settings = ref({
   ctaTitle: "", ctaSubtitle: "", ctaButtonText: "",
   featuredSectionTitle: "", latestSectionTitle: "", viewAllText: "", emptyPostText: "",
   icpNumber: "", icpUrl: "", policeIcp: "", policeIcpUrl: "",
+  aboutTitle: "", aboutDescription: "", aboutFeaturesTitle: "",
+  aboutTechStackTitle: "", aboutDeveloperTitle: "", aboutDeveloperRole: "",
+  aboutContactTitle: "", aboutContactText: "",
 });
 const social = ref({ github: "", twitter: "", email: "" });
 const captchaEnabled = ref(true);
@@ -207,6 +253,10 @@ async function fetchSettings() {
       viewAllText: data.viewAllText || "", emptyPostText: data.emptyPostText || "",
       icpNumber: data.icpNumber || "", icpUrl: data.icpUrl || "",
       policeIcp: data.policeIcp || "", policeIcpUrl: data.policeIcpUrl || "",
+      aboutTitle: data.aboutTitle || "", aboutDescription: data.aboutDescription || "",
+      aboutFeaturesTitle: data.aboutFeaturesTitle || "", aboutTechStackTitle: data.aboutTechStackTitle || "",
+      aboutDeveloperTitle: data.aboutDeveloperTitle || "", aboutDeveloperRole: data.aboutDeveloperRole || "",
+      aboutContactTitle: data.aboutContactTitle || "", aboutContactText: data.aboutContactText || "",
     };
     if (data.socialLinks) {
       try { social.value = JSON.parse(data.socialLinks); } catch {}

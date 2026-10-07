@@ -14,6 +14,16 @@ export default async function AboutPage() {
   let social: { github?: string; email?: string } = {};
   try { social = JSON.parse(settings.socialLinks || "{}"); } catch {}
 
+  // About page text from settings
+  const aboutTitle = settings.aboutTitle || "关于本站";
+  const aboutDescription = settings.aboutDescription || `${siteName} 是一个基于 Next.js 14 + Express + Vue 3 的前后端分离博客系统。采用现代化的技术栈和精美的 UI 设计，让写作和阅读都成为一种享受。`;
+  const aboutFeaturesTitle = settings.aboutFeaturesTitle || "技术特性";
+  const aboutTechStackTitle = settings.aboutTechStackTitle || "技术栈";
+  const aboutDeveloperTitle = settings.aboutDeveloperTitle || "开发者";
+  const aboutDeveloperRole = settings.aboutDeveloperRole || "全栈开发者 · 博客维护者";
+  const aboutContactTitle = settings.aboutContactTitle || "联系我";
+  const aboutContactText = settings.aboutContactText || "如果你对这个项目有任何问题或建议，欢迎通过以下方式联系我：";
+
   return (
     <div className="pt-16 min-h-screen">
       <div className="max-w-3xl mx-auto px-6 py-16">
@@ -26,13 +36,10 @@ export default async function AboutPage() {
         </MotionDiv>
 
         <MotionDiv initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="prose-aurora">
-          <h2>关于本站</h2>
-          <p>
-            {siteName} 是一个基于 <strong>Next.js 14 + Express + Vue 3</strong> 的前后端分离博客系统。
-            采用现代化的技术栈和精美的 UI 设计，让写作和阅读都成为一种享受。
-          </p>
+          <h2>{aboutTitle}</h2>
+          <p>{aboutDescription}</p>
 
-          <h2>技术特性</h2>
+          <h2>{aboutFeaturesTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose my-6">
             {[
               { icon: Code, title: "前后端分离", desc: "API、前台、后台三端独立部署" },
@@ -48,7 +55,7 @@ export default async function AboutPage() {
             ))}
           </div>
 
-          <h2>技术栈</h2>
+          <h2>{aboutTechStackTitle}</h2>
           <ul>
             <li><strong>前台</strong>: Next.js 14, React 18, Tailwind CSS, Framer Motion</li>
             <li><strong>后端</strong>: Express, Prisma ORM, SQLite, JWT</li>
@@ -56,7 +63,7 @@ export default async function AboutPage() {
             <li><strong>部署</strong>: Docker 一键部署</li>
           </ul>
 
-          <h2>开发者</h2>
+          <h2>{aboutDeveloperTitle}</h2>
           <div className="not-prose my-4 p-5 rounded-2xl bg-gradient-to-br from-aurora-50 via-purple-50 to-pink-50 border border-aurora-100">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-aurora-400 via-purple-400 to-pink-400 flex items-center justify-center text-white text-xl font-bold shadow-lg">
@@ -64,7 +71,7 @@ export default async function AboutPage() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-0.5">{siteAuthor}</h3>
-                <p className="text-sm text-gray-500">全栈开发者 · 博客维护者</p>
+                <p className="text-sm text-gray-500">{aboutDeveloperRole}</p>
                 <a
                   href={siteAuthorUrl}
                   target="_blank"
@@ -77,10 +84,8 @@ export default async function AboutPage() {
             </div>
           </div>
 
-          <h2>联系我</h2>
-          <p>
-            如果你对这个项目有任何问题或建议，欢迎通过以下方式联系我：
-          </p>
+          <h2>{aboutContactTitle}</h2>
+          <p>{aboutContactText}</p>
           <div className="flex gap-4 not-prose my-4">
             {social.github && (
               <a href={social.github} target="_blank" rel="noopener noreferrer" className="px-5 py-3 rounded-xl bg-gray-900 text-white hover:shadow-lg transition-all">GitHub</a>

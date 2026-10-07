@@ -33,6 +33,10 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <a :href="homeUrl" target="_blank" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-aurora-50 text-aurora-600 hover:bg-aurora-100 transition-all text-sm font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            访问主页
+          </a>
           <div class="relative" ref="userMenuRef">
             <button @click="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-all">
               <div class="w-8 h-8 rounded-full bg-gradient-to-br from-aurora-400 to-purple-400 flex items-center justify-center text-white text-sm font-medium">
@@ -66,11 +70,21 @@
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import api from "@/api";
 
 const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
 const collapsed = ref(false);
+
+// Homepage URL from settings or default
+const homeUrl = ref("/");
+async function fetchHomeUrl() {
+  try {
+    const res = await api.get("/settings");
+    if (res.data.siteUrl) homeUrl.value = res.data.siteUrl;
+  } catch {}
+}
 const userMenuOpen = ref(false);
 const userMenuRef = ref<HTMLElement>();
 
@@ -163,6 +177,7 @@ function stopAutoLogout() {
 
 onMounted(() => {
   auth.loadUser();
+  fetchHomeUrl();
   document.addEventListener("click", handleClickOutside);
   startAutoLogout();
 });

@@ -69,6 +69,15 @@ async function seed() {
     latestSectionTitle: "最新文章",
     viewAllText: "查看全部",
     emptyPostText: "暂无文章，去后台发布第一篇吧！",
+    // About page text
+    aboutTitle: "关于本站",
+    aboutDescription: "Aurora Blog 是一个基于 Next.js 14 + Express + Vue 3 的前后端分离博客系统。采用现代化的技术栈和精美的 UI 设计，让写作和阅读都成为一种享受。",
+    aboutFeaturesTitle: "技术特性",
+    aboutTechStackTitle: "技术栈",
+    aboutDeveloperTitle: "开发者",
+    aboutDeveloperRole: "全栈开发者 · 博客维护者",
+    aboutContactTitle: "联系我",
+    aboutContactText: "如果你对这个项目有任何问题或建议，欢迎通过以下方式联系我：",
     socialLinks: JSON.stringify({
       github: "https://github.com/phantomxjc",
       twitter: "",
