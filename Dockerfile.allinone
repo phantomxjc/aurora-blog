@@ -26,19 +26,23 @@ RUN npx vite build
 FROM node:18-alpine
 WORKDIR /app
 
-# PM2 进程管理 + 静态文件服务器
-RUN npm install -g pm2 serve
+# PM2 进程管理
+RUN npm install -g pm2
+
+# Proxy 依赖
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 # API（含 deps + prisma client）
 COPY --from=api-build /app/api ./api
 # Blog（含 deps + .next 构建产物）
 COPY --from=blog-build /app/blog ./blog
 # Admin 静态文件 — 放到 public/admin/ 子目录，与 nginx 独立容器行为一致
-# serve 以 public/ 为根，/admin/ 路径即可访问到构建产物
 RUN mkdir -p /app/admin/public/admin
 COPY --from=admin-build /app/admin/dist /app/admin/public/admin/
-# Proxy + 配置
+# Proxy + 静态服务器 + 配置
 COPY proxy.js ./
+COPY static-server.js ./
 COPY ecosystem.config.js ./
 COPY entrypoint.sh ./
 RUN chmod +x entrypoint.sh

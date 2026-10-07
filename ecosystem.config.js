@@ -22,8 +22,11 @@ module.exports = {
     },
     {
       name: 'admin',
-      script: 'serve',
-      args: '/app/admin/public -l 5174',
+      cwd: '/app',
+      script: 'static-server.js',
+      env: {
+        ADMIN_PORT: 5174,
+      },
     },
     {
       name: 'proxy',
