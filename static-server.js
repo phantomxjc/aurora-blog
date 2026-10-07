@@ -57,7 +57,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`📦 Admin static server running on http://0.0.0.0:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`📦 Admin static server running on http://*:${PORT}`);
   console.log(`   Serving files from ${ROOT}`);
 });
