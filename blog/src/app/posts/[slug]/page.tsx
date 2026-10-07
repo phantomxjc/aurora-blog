@@ -10,9 +10,9 @@ import { getPostCover } from "@/lib/coverImage";
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   try {
     const post = await getPost(params.slug);
-    const s = await getSettings().catch(() => ({})); return { title: `${post.title} - ${s.siteName || "Aurora Blog"}`, description: post.description };
+    const s: Record<string, string> = await getSettings().catch(() => ({})); return { title: `${post.title} - ${s.siteName || "Aurora Blog"}`, description: post.description };
   } catch {
-    const s = await getSettings().catch(() => ({})); return { title: s.siteName || "Aurora Blog" };
+    const s: Record<string, string> = await getSettings().catch(() => ({})); return { title: s.siteName || "Aurora Blog" };
   }
 }
 
