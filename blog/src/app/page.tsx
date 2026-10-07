@@ -9,9 +9,11 @@ import dayjs from "dayjs";
 
 export default async function HomePage() {
   let posts: any[] = [];
+  let totalPosts = 0;
   let settings: any = {};
   try {
     const [postsRes, settingsRes] = await Promise.all([getPosts({ limit: 9 }), getSettings().catch(() => ({}))]);
+    totalPosts = postsRes.total || 0;
     posts = postsRes.data || [];
     settings = settingsRes;
   } catch {
@@ -31,7 +33,7 @@ export default async function HomePage() {
       <Hero
         siteName={siteName}
         siteDescription={settings.siteDescription || ""}
-        postCount={posts.length}
+        postCount={totalPosts || posts.length}
         heroBadgeText={settings.heroBadgeText || "欢迎来到"}
         heroPostCountLabel={settings.heroPostCountLabel || "篇文章"}
         heroUpdateLabel={settings.heroUpdateLabel || "持续更新中"}
