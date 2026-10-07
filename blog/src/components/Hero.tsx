@@ -2,7 +2,21 @@
 import { motion } from "framer-motion";
 import { Sparkles, BookOpen, TrendingUp } from "lucide-react";
 
-export default function Hero({ siteName, siteDescription, postCount }: { siteName: string; siteDescription: string; postCount: number }) {
+export default function Hero({
+  siteName,
+  siteDescription,
+  postCount,
+  heroBadgeText = "欢迎来到",
+  heroPostCountLabel = "篇文章",
+  heroUpdateLabel = "持续更新中",
+}: {
+  siteName: string;
+  siteDescription: string;
+  postCount: number;
+  heroBadgeText?: string;
+  heroPostCountLabel?: string;
+  heroUpdateLabel?: string;
+}) {
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-16">
       {/* Animated background */}
@@ -28,7 +42,7 @@ export default function Hero({ siteName, siteDescription, postCount }: { siteNam
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6"
         >
           <Sparkles className="w-4 h-4 text-aurora-500" />
-          <span className="text-sm text-gray-600">欢迎来到</span>
+          <span className="text-sm text-gray-600">{heroBadgeText}</span>
         </motion.div>
 
         <motion.h1
@@ -57,12 +71,12 @@ export default function Hero({ siteName, siteDescription, postCount }: { siteNam
         >
           <div className="flex items-center gap-2 text-gray-600">
             <BookOpen className="w-5 h-5 text-aurora-500" />
-            <span className="font-medium">{postCount}</span> 篇文章
+            <span className="font-medium">{postCount}</span> {heroPostCountLabel}
           </div>
           <div className="w-px h-6 bg-gray-200" />
           <div className="flex items-center gap-2 text-gray-600">
             <TrendingUp className="w-5 h-5 text-purple-500" />
-            <span>持续更新中</span>
+            <span>{heroUpdateLabel}</span>
           </div>
         </motion.div>
       </div>
