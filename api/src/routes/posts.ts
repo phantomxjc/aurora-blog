@@ -93,7 +93,7 @@ router.get("/:slug", async (req, res) => {
 
 // Create post (auth required)
 router.post("/", requireAuth, async (req, res) => {
-  const { title, content, description, coverImage, category, pinned, draft, featured, tags, slug: customSlug } = req.body;
+  const { title, content, description, coverImage, category, pinned, draft, featured, tags, slug: customSlug, published: customPublished } = req.body;
   let slug = customSlug || slugify(title);
   // Ensure unique slug
   const existing = await prisma.post.findUnique({ where: { slug } });
@@ -112,7 +112,7 @@ router.post("/", requireAuth, async (req, res) => {
       pinned: pinned || false,
       draft: draft || false,
       featured: featured || false,
-      published: new Date(),
+      published: customPublished ? new Date(customPublished) : new Date(),
       tags: tags?.length
         ? { create: await Promise.all(tags.map(async (tagName: string) => {
             let tag = await prisma.tag.findUnique({ where: { name: tagName } });
@@ -132,7 +132,7 @@ router.put("/:slug", requireAuth, async (req, res) => {
   const post = await prisma.post.findUnique({ where: { slug: req.params.slug } });
   if (!post) return res.status(404).json({ error: "文章不存在" });
 
-  const { title, content, description, coverImage, category, pinned, draft, featured, tags } = req.body;
+  const { title, content, description, coverImage, category, pinned, draft, featured, tags, published: customPublished } = req.body;
   const contentHtml = content ? (marked.parse(content) as string) : undefined;
 
   // Update tags if provided
@@ -156,6 +156,7 @@ router.put("/:slug", requireAuth, async (req, res) => {
       ...(pinned !== undefined && { pinned }),
       ...(draft !== undefined && { draft }),
       ...(featured !== undefined && { featured }),
+      ...(customPublished && { published: new Date(customPublished) }),
       updated: new Date(),
     },
     include: { tags: { include: { tag: true } } },
