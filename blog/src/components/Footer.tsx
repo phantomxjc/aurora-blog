@@ -56,7 +56,7 @@ export default async function Footer() {
                 rel="noopener noreferrer"
                 className="text-aurora-600 hover:text-aurora-700 font-medium transition-colors"
               >
-                软件推送/phantomxjc
+                软件推手/phantomxjc
               </a>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default async function Footer() {
               rel="noopener noreferrer"
               className="text-aurora-600 hover:text-aurora-700 font-medium transition-colors"
             >
-              软件推送/phantomxjc
+              软件推手/phantomxjc
             </a>
           </p>
         </div>

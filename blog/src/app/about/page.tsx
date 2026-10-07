@@ -56,7 +56,7 @@ export default async function AboutPage() {
                 P
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-0.5">软件推送/phantomxjc</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-0.5">软件推手/phantomxjc</h3>
                 <p className="text-sm text-gray-500">全栈开发者 · 博客维护者</p>
                 <a
                   href="https://github.com/phantomxjc"
