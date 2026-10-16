@@ -7,6 +7,7 @@ const routes = [
     component: () => import("@/layout/AdminLayout.vue"),
     children: [
       { path: "", name: "dashboard", component: () => import("@/views/Dashboard.vue") },
+      { path: "traffic", name: "traffic", component: () => import("@/views/Traffic.vue") },
       { path: "posts", name: "posts", component: () => import("@/views/Posts/List.vue") },
       { path: "posts/new", name: "post-new", component: () => import("@/views/Posts/Edit.vue") },
       { path: "posts/:slug/edit", name: "post-edit", component: () => import("@/views/Posts/Edit.vue") },

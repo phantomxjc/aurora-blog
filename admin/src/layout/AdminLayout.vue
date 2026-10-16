@@ -105,6 +105,7 @@ const WARNING_BEFORE = 60;
 
 const menu = [
   { path: "/", label: "仪表盘", icon: "📊" },
+  { path: "/traffic", label: "流量监控", icon: "📈" },
   { path: "/posts", label: "文章管理", icon: "📝" },
   { path: "/dynamics", label: "动态管理", icon: "💬" },
   { path: "/projects", label: "项目管理", icon: "📁" },

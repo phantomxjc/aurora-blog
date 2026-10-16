@@ -10,6 +10,8 @@ import projectRoutes from "./routes/projects.js";
 import tagRoutes from "./routes/tags.js";
 import imageRoutes from "./routes/images.js";
 import settingsRoutes from "./routes/settings.js";
+import trafficRoutes from "./routes/traffic.js";
+import { accessLogMiddleware } from "./middleware/accessLog.js";
 import { uploadDir } from "./utils/upload.js";
 
 const app = express();
@@ -19,6 +21,9 @@ const PORT = Number(process.env.PORT) || 3002;
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Access log middleware — records every API request
+app.use(accessLogMiddleware);
 
 // Static: serve uploaded files
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -32,6 +37,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/traffic", trafficRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) =>

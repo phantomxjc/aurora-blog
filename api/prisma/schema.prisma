@@ -104,3 +104,22 @@ model Setting {
   updatedAt DateTime @default(now())
   updatedBy String?
 }
+
+model AccessLog {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  method    String
+  path      String
+  status    Int
+  userAgent String   @default("")
+  referer   String   @default("")
+  visitorId String   @default("")
+  postId    Int?
+  duration  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([ip])
+  @@index([path])
+  @@index([visitorId])
+}
