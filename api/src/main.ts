@@ -13,6 +13,12 @@ import settingsRoutes from "./routes/settings.js";
 import trafficRoutes from "./routes/traffic.js";
 import { accessLogMiddleware } from "./middleware/accessLog.js";
 import { uploadDir } from "./utils/upload.js";
+import {
+  refreshHeroBackground,
+  isHeroBackgroundStale,
+  getHeroBackgroundPath,
+  getHeroBackgroundVersion,
+} from "./utils/heroBackground.js";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3002;
@@ -39,6 +45,19 @@ app.use("/api/images", imageRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/traffic", trafficRoutes);
 
+// Hero background image — served from local file, refreshed daily
+app.get("/api/hero-bg", (_req, res) => {
+  const filePath = getHeroBackgroundPath();
+  if (!fs.existsSync(filePath)) {
+    res.status(404).json({ error: "Background not available" });
+    return;
+  }
+  // Cache for 1 hour; browser revalidates after that
+  res.setHeader("Cache-Control", "public, max-age=3600");
+  res.setHeader("Content-Type", "image/jpeg");
+  res.sendFile(filePath);
+});
+
 // Health check
 app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", time: new Date().toISOString() })
@@ -52,6 +71,23 @@ app.use(
   }
 );
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🌌 Aurora API running on http://localhost:${PORT}`);
+
+  // On startup: download hero background if stale or missing
+  if (isHeroBackgroundStale()) {
+    console.log("[hero-bg] Background missing or stale, downloading...");
+    const ok = await refreshHeroBackground();
+    if (!ok) console.warn("[hero-bg] All sources failed, will retry later");
+  } else {
+    console.log(`[hero-bg] Current background is fresh (v=${getHeroBackgroundVersion()})`);
+  }
+
+  // Every hour: check if background is stale (> 24h), refresh if so
+  setInterval(async () => {
+    if (isHeroBackgroundStale()) {
+      console.log("[hero-bg] Daily refresh triggered");
+      await refreshHeroBackground();
+    }
+  }, 60 * 60 * 1000); // 1 hour
 });

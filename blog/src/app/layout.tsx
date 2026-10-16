@@ -21,6 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${inter.variable} ${lora.variable} ${jetbrains.variable}`}>
+      <head>
+        {/* Preconnect to image CDN for faster hero background loading */}
+        <link rel="preconnect" href="https://picsum.photos" />
+        <link rel="dns-prefetch" href="https://picsum.photos" />
+      </head>
       <body className="min-h-screen flex flex-col bg-gradient-to-b from-white via-aurora-50/30 to-white">
         <Header />
         <main className="flex-1">{children}</main>

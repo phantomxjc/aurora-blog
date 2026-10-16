@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, BookOpen, TrendingUp } from "lucide-react";
 
@@ -17,13 +18,47 @@ export default function Hero({
   heroPostCountLabel?: string;
   heroUpdateLabel?: string;
 }) {
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  useEffect(() => {
+    // Cache-bust by today's date: same day = browser cache hit, next day = new image
+    const today = new Date().toISOString().slice(0, 10);
+    const bgUrl = `/api/hero-bg?v=${today}`;
+
+    const img = new Image();
+    img.onload = () => setBgLoaded(true);
+    img.onerror = () => setBgLoaded(false); // gradient fallback stays
+    img.src = bgUrl;
+  }, []);
+
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden pt-16">
-      {/* Animated background */}
+      {/* Layer 1: Gradient fallback (always visible, instant) */}
       <div className="absolute inset-0 bg-gradient-to-br from-aurora-50 via-white to-purple-50" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-aurora-200/30 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
-      <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "4s" }} />
+
+      {/* Layer 2: Random background image (fades in when loaded) */}
+      <div
+        className="absolute inset-0 transition-opacity duration-[1200ms] ease-out"
+        style={{
+          backgroundImage: bgLoaded
+            ? `url(/api/hero-bg?v=${new Date().toISOString().slice(0, 10)})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: bgLoaded ? 1 : 0,
+        }}
+      />
+
+      {/* Layer 3: White overlay for text readability (fades in with image) */}
+      <div
+        className="absolute inset-0 bg-white/55 transition-opacity duration-[1200ms] ease-out"
+        style={{ opacity: bgLoaded ? 1 : 0 }}
+      />
+
+      {/* Layer 4: Animated blobs (subtle, on top of everything) */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-aurora-200/20 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
+      <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-200/15 rounded-full blur-3xl animate-float" style={{ animationDelay: "4s" }} />
 
       {/* Grid pattern */}
       <div
